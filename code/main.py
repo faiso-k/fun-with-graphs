@@ -156,26 +156,21 @@ if __name__ == '__main__':
         times = []
         for e in range(edges):
             g = create_random_connected_graph(n, e)
+            cop_positions = cops_init_heuristic(g, cops_count)
+
             start_time = time.perf_counter()
 
-            possible_positions = itertools.combinations(g.nodes, cops_count)
-            possible_robbers = set(g.nodes)
-            best_score = -math.inf
+            best_score = math.inf
             best_move = None
-            best_move_r = 0
-            alpha = -math.inf
-            beta = math.inf
-            for position in possible_positions:
-                for robber in possible_robbers:
-                    if not robber in position:
-                        best_move_r = final_minimax.find_best_move_robber(g, max_rounds, cops_count, (),
-                                                                    position, robber, 0, 0)
-                score = final_minimax.minimax_cop(g, 0, position, best_move_r, max_rounds, cops_count)[0]
-                if score > best_score:
-                    best_score = score
-                    best_move = position
+            for node in g.nodes:
+                if node not in cop_positions:
+                    score = final_minimax.minimax_rob(g, 0, (), tuple(cop_positions), node, max_rounds,
+                                                cops_count)[0]
+                    if score < best_score:
+                        best_score = score
+                        best_move = node
+            robber_position = best_move
 
-            cop_positions = list(best_move)
             end_time = time.perf_counter()
             times.append(end_time-start_time)
             logging.info(f"Nodes: {n}, Edges: {e}, Time: {end_time-start_time}")

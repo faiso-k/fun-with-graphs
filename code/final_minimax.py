@@ -142,8 +142,8 @@ def generate_possible_moves_robber(graph: Graph, old_cop_positions: tuple[int], 
 @functools.cache
 def relevant_cop_moves(graph: Graph, cops_positions: tuple[int], robber_position: int, cops_number: int) -> list[
     tuple[int, ...]]:
-    copless_graph = graph.subgraph(set(graph) - (set(cops_positions) - {robber_position}))
-    reachable_nodes = set(graph.subgraph(shortest_path(copless_graph, robber_position)).nodes) - set(cops_positions)
+
+    reachable_nodes = generate_possible_moves_robber(graph, cops_positions, cops_positions, robber_position)
 
     considered_cops = set(cops_positions) | reachable_nodes
 
